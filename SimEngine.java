@@ -100,7 +100,8 @@ public class SimEngine{
 		
 		Vector2D Fw = (pol.Powieksz(k)).Suma(v.Powieksz(c)).Powieksz(-1) ;
 		Vector2D a=Fw.Powieksz(1/masa);
-		Vector2D x=pol.Suma(v)
+		Vector2D x=(pol.Suma(v.Powieksz(dt))).Suma((u.Powieksz(dt)).Powieksz(0.5));
+		Vector2D pr=v.Suma(u.Powieksz(dt));
 		
 	}
 	
