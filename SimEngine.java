@@ -3,18 +3,18 @@ public class SimEngine{
 	
 	
 	private double masa, k , c, lo;
-	private Vector2D pol, v, u, g;
+	private Vector2D pozM, pozUtw, predM, g;
 	
-	public SimEngine(double m, double k, double b, double l, Vector2D pol, Vector2D v, Vector2D u, Vector2D g){
+	public SimEngine(double m, double k, double b, double l, Vector2D pozM, Vector2D predM, Vector2D pozUtw, Vector2D g){ //konstruktor z parametrami ustalajacy wartosci do obliczen symulacji
 		
-		setmasa(100);
-		setk(2);
-		setc(0.5);
-		setlo(1);
-		setpol(0,0);
-		setv(1,3);
-		setu(0,1);
-		setg(0,-10);
+		setmasa(m);
+		setk(k);
+		setc(b);
+		setlo(l);
+		setpol(pozM);
+		setv(predM);
+		setu(pozUtw);
+		setg(g);
 		
 	}
 	
@@ -47,20 +47,20 @@ public class SimEngine{
 		 else System.out.println("wartosc musi byc wieksza od 0!");
 	}
 	
-	public void setpol(double x, double y){ 
-		this.pol= new Vector2D(x,y);
+	public void setpol(Vector2D pozM){ 
+		this.pozM= pozM;
 	}
 	
-	public void setv(double x, double y){ 
-		this.v= new Vector2D(x,y);
+	public void setv(Vector2D predM){ 
+		this.predM= predM;
 	}
 	
-	public void setu(double x, double y){ 
-		 this.u = new Vector2D(x,y);
+	public void setu(Vector2D pozUtw){ 
+		 this.pozUtw = pozUtw;
 	}
 	
-	public void setg(double x, double y){ 
-		 this.g = new Vector2D(x,y);
+	public void setg(Vector2D g){ 
+		 this.g = g;
 	}
 	
 	
@@ -81,34 +81,32 @@ public class SimEngine{
 	}
 	
 	public Vector2D getpol(){
-		return pol;
+		return pozM;
 	}
 	
 	public Vector2D getv(){
-		return v;
+		return predM;
 	}
 	
 	public Vector2D getu(){
-		return u;
+		return pozUtw;
 	}
 	
 	public Vector2D getg(){
 		return g;
 	}
 	
-	public void symulacja(double dt){
+	public void sim(double krok){	//symualcja(rownania ruchu dla oscylatora))
 		
-		Vector2D Fw = (pol.Powieksz(k)).Suma(v.Powieksz(c)).Powieksz(-1) ;
+		Vector2D Fw = ( g.Powieksz(masa) ).Suma(  ( pozM.Roznica(pozUtw).Roznica(new Vector2D(0,getlo())).Powieksz(k).Powieksz(-1) ).Suma( predM.Powieksz(c).Powieksz(-1) )  );
 		Vector2D a=Fw.Powieksz(1/masa);
-		Vector2D x=(pol.Suma(v.Powieksz(dt))).Suma((u.Powieksz(dt)).Powieksz(0.5));
-		Vector2D pr=v.Suma(u.Powieksz(dt));
+		setpol((  (  pozM.Roznica(pozUtw).Roznica(new Vector2D(0,getlo())).Suma( predM.Powieksz(krok) )  ).Suma(  ( a.Powieksz(krok).Powieksz(krok) ).Powieksz(0.5)  )   ).Suma(new Vector2D(0,getlo()))); 
+		setv(  predM.Suma( a.Powieksz(krok) )  );
+		
 		
 	}
 	
-	public void reset(){
-		v.x=0;
-		v.y=0;
+	public void reset(){  //reset symulacji(predkosci masy)
+		setv(new Vector2D(0,0));
 	}
-	
-	
 }
